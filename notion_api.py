@@ -230,7 +230,8 @@ if __name__ == "__main__":
     # Convert to readable format
     readable_content = extract_readable_content(page_data)
     
-    print(f"Title: {readable_content['title']}")
-    print("\nContent:")
-    for content_item in readable_content['content']:
-        print(content_item)
+    # print(f"Title: {readable_content['title']}")
+    # print("\nContent:")
+    # for content_item in readable_content['content']:
+    #     print(content_item)
+    print(readable_content)

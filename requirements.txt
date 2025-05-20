@@ -1,7 +1,6 @@
 python-dotenv
-requests
 langchain
 langgraph
 langchain-google-genai
-matplotlib
-IPython
+fastapi
+uvicorn

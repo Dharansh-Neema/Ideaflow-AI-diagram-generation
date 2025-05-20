@@ -1,23 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ideaflow - AI Diagram Generator</title>
+  <!-- Mermaid JS for diagram rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-hover: #3a56d4;
+      --secondary-color: #4cc9f0;
+      --accent-color: #f72585;
+      --text-color: #333;
+      --light-gray: #f5f7fa;
+      --gray: #e1e4e8;
+      --dark-gray: #586069;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-gray);
+      padding: 0;
+      margin: 0;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 1.5rem 0;
+      box-shadow: var(--shadow);
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .brand h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    main {
+      padding: 2rem 0;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .intro {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .intro h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+    
+    .intro p {
+      color: var(--dark-gray);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    label {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    input[type="text"] {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gray);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+    }
+    
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    #diagram-container {
+      margin-top: 2rem;
+    }
+    
+    .result-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-top: 2rem;
+      display: none;
+    }
+    
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray);
+    }
+    
+    .result-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      display: none;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(67, 97, 238, 0.1);
+      border-radius: 50%;
+      border-left-color: var(--primary-color);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    footer {
+      background-color: white;
+      padding: 1.5rem 0;
+      text-align: center;
+      border-top: 1px solid var(--gray);
+      margin-top: 2rem;
+    }
+    
+    .footer-text {
+      color: var(--dark-gray);
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .brand {
+        justify-content: center;
+      }
+      
+      .brand h1 {
+        font-size: 1.5rem;
+      }
+      
+      .intro h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
-<body>  
-    <pre class="mermaid" id="mermaid">
-        graph TB
-    A[Application] --> B(Presentation)
-    B --> C{Session}
-    C --> D[Transport]
-    D --> E(Network)
-    E --> F{Data Link}
-    F --> G[Physical]
-    </pre>
-    <script>
-        mermaid.initialize({ startOnLoad: true });
-    </script>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="brand">
+          <i class="fas fa-project-diagram fa-2x"></i>
+          <h1>Ideaflow Diagram Generator</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <main class="container">
+    <div class="card">
+      <div class="intro">
+        <h2>AI-Powered Mermaid Diagram Generator</h2>
+        <!-- <p>Generate beautiful diagrams from your Notion pages. Simply enter the title of your Notion page and let AI do the rest.</p> -->
+      </div>
+      
+      <form id="form">
+        <div class="form-group">
+          <label for="title">Notion Page Title</label>
+          <input type="text" id="title" name="title" placeholder="Enter your Notion page title" required />
+        </div>
+        
+        <button type="submit">
+          <i class="fas fa-magic"></i> Generate Diagram
+        </button>
+      </form>
+    </div>
+    
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+    </div>
+    
+    <div class="result-card" id="result-card">
+      <div class="result-header">
+        <div class="result-title">Generated Diagram</div>
+      </div>
+      <div id="diagram-container"></div>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="container">
+      <p class="footer-text">© 2025 Ideaflow AI Diagram Generator</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Mermaid once during page load
+    mermaid.initialize({ 
+      startOnLoad: false,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+
+    const form = document.getElementById("form");
+    const loading = document.getElementById("loading");
+    const resultCard = document.getElementById("result-card");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const title = formData.get("title");
+      
+      // Show loading spinner
+      loading.style.display = "flex";
+      resultCard.style.display = "none";
+
+      try {
+        const response = await fetch("http://localhost:8000/generate-mermaid-code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title }),
+        });
+
+        const data = await response.json();
+
+        // Hide loading spinner
+        loading.style.display = "none";
+        
+        // Show result card
+        resultCard.style.display = "block";
+
+        const container = document.getElementById("diagram-container");
+        container.innerHTML = ""; 
+
+        const pre = document.createElement("pre");
+        pre.className = "mermaid";
+        pre.textContent = data.mermaid_code;
+        container.appendChild(pre);
+
+        // Render the newly added Mermaid diagram
+        mermaid.init(undefined, pre);
+      } catch (err) {
+        console.error("Error:", err);
+        loading.style.display = "none";
+        alert("An error occurred while generating the diagram. Please try again.");
+      }
+    });
+  </script>
 </body>
 </html>
